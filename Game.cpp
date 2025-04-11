@@ -61,6 +61,12 @@ void Game::playGame(bool isAIModeIn, ifstream& gameFile){
     }
 }
 
+/*There are no duplicate indices present in pickupList
+Each element of pickupList is a digit in the range '0' through '9'
+The length of the pickupList is less than or equal to the capacity of an elevator
+The maximum value pointed to by an index of pickupList must be strictly less than the number of people on the floor pointed to by pickupFloorNum
+Each person represented by an index in pickupList must be going in the same direction relative to pickupFloorNum
+*/
 bool Game::isValidPickupList(const string& pickupList,
                              const int pickupFloorNum) const {
     bool returnBool = true;
@@ -68,13 +74,13 @@ bool Game::isValidPickupList(const string& pickupList,
     int spaceLeft = (10 - currentFloor.getNumPeople());
     for (char letter : pickupList){
         //is each element in pickupList b/w 0 and 9?
-        if (!isdigit(letter) && letter < 0 && 0 > 9){
+        if (!isdigit(letter) || (letter < 0 && 0 > 9)){
             returnBool = false;
         }
         //is max value less than number of people?
-        if (letter >= currentFloor.getNumPeople()){
+  /*      if (letter >= currentFloor.getNumPeople()){
             returnBool = false;
-        }
+        }*/
     }
     //is len(pickupList) greater than elevator capacity?
     if (pickupList.length() > spaceLeft){
@@ -82,10 +88,10 @@ bool Game::isValidPickupList(const string& pickupList,
     }
     //are there duplicates in pickupList?
     for (int i = 0; i < pickupList.length(); i++){
-        for (int j = 1; j < (pickupList.length() - 1); j++){
-            if (pickupList.at(i) == pickupList.at(j)){
+    //    for (int j = 1; j < (pickupList.length() - 1); j++){
+            if (pickupList.at(i) == pickupList.at(i+1)){
                 returnBool = false;
-            }
+    //        }
         }
     }
     // are persons going in the same direction?
