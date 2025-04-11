@@ -87,9 +87,40 @@ bool Move::isValidMove(Elevator elevators[NUM_ELEVATORS]) const {
     return false;
 }
 
-void Move::setPeopleToPickup(const string& pickupList, const int currentFloor, 
+void Move::setPeopleToPickup(const string& pickupList, const int currentFloor,
                              const Floor& pickupFloor) {
-    
+    numPeopleToPickup = 0;
+    totalSatisfaction = 0;
+
+    int i = 0;
+    while (i < pickupList.length()) {
+
+        while (i < pickupList.length() && !isdigit(pickupList[i])) {
+            i++;
+        }
+
+        int index = 0;
+        while (i < pickupList.length() && isdigit(pickupList[i])) {
+            index = index * 10 + (pickupList[i] - '0');
+            i++;
+        }
+
+        if (index >= 0 && index < pickupFloor.getNumPeople()) {
+            Person person = pickupFloor.getPersonByIndex(index);
+            peopleToPickup[numPeopleToPickup] = index;
+            numPeopleToPickup++;
+            totalSatisfaction += MAX_ANGER - person.getAngerLevel();
+
+            int destination = person.getTargetFloor();
+            if (numPeopleToPickup == 1) {
+                targetFloor = destination;
+            } else {
+                if (abs(destination - currentFloor) > abs(targetFloor - currentFloor)) {
+                    targetFloor = destination;
+                }
+            }
+        }
+    }
 }
 
 //////////////////////////////////////////////////////
