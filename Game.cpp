@@ -68,7 +68,7 @@ bool Game::isValidPickupList(const string& pickupList,
     int spaceLeft = (10 - currentFloor.getNumPeople());
     for (char letter : pickupList){
         //is each element in pickupList b/w 0 and 9?
-        if (!isdigit(letter) && letter >= 0 && 0<= 9){
+        if (!isdigit(letter) && letter < 0 && 0 > 9){
             returnBool = false;
         }
         //is max value less than number of people?
