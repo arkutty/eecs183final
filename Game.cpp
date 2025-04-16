@@ -72,7 +72,8 @@ bool Game::isValidPickupList(const string& pickupList,
     bool returnBool = true;
     Floor currentFloor = building.getFloorByFloorNum(pickupFloorNum);
     int spaceLeft = (10 - currentFloor.getNumPeople());
-    for (char letter : pickupList){
+    for (int i = 0; i < pickupList.length(); i++){
+        int letter = pickupList[i];
         //is each element in pickupList b/w 0 and 9?
         if (!isdigit(letter) || (letter < 0 && 0 > 9)){
             returnBool = false;
