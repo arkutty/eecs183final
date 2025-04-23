@@ -69,43 +69,45 @@ Each person represented by an index in pickupList must be going in the same dire
 */
 bool Game::isValidPickupList(const string& pickupList,
                              const int pickupFloorNum) const {
-    bool returnBool = true;
+    
     Floor currentFloor = building.getFloorByFloorNum(pickupFloorNum);
-    int spaceLeft = (10 - currentFloor.getNumPeople());
+    //   int spaceLeft = (10 - currentFloor.getNumPeople());
     for (int i = 0; i < pickupList.length(); i++){
         int letter = pickupList[i];
         //is each element in pickupList b/w 0 and 9?
-        if (!isdigit(letter) || (letter < 0 && 0 > 9)){
-            returnBool = false;
+        if (!isdigit(letter - '0') || (letter - '0') < '0' || (letter - '0') > '9'){
+            return false;
         }
         //is max value less than number of people?
-  /*      if (letter >= currentFloor.getNumPeople()){
-            returnBool = false;
-        }*/
-    }
-    //is len(pickupList) greater than elevator capacity?
-    if (pickupList.length() > spaceLeft){
-        returnBool = false;
-    }
-    //are there duplicates in pickupList?
-    for (int i = 0; i < pickupList.length(); i++){
-    //    for (int j = 1; j < (pickupList.length() - 1); j++){
-            if (pickupList.at(i) == pickupList.at(i+1)){
-                returnBool = false;
-    //        }
+        if ((letter - '0') > currentFloor.getNumPeople()){
+            return false;
         }
     }
-    // are persons going in the same direction?
-    Person fPerson = currentFloor.getPersonByIndex(0);
+    //is len(pickupList) greater than elevator capacity?
+    if (pickupList.length() > 10){
+        return false;
+    }
+    
+    //are there duplicates in pickupList?
+    for (int i = 0; i < pickupList.length(); i++){
+        for (int j = (i+1); j < (pickupList.length() - 1); j++){
+            if (pickupList.at(i) == pickupList.at(j)){
+                return false;
+                
+            }
+        }
+    }
+        // are persons going in the same direction?
+    Person fPerson = currentFloor.getPersonByIndex(pickupList.at(0) - '0');
     bool goingUp;
     if (fPerson.getTargetFloor() > pickupFloorNum){
         goingUp = true;
     } else {
         goingUp = false;
     }
-    
+        
     for (int k = 1; k < currentFloor.getNumPeople(); k++){
-        Person kPerson = currentFloor.getPersonByIndex(k);
+        Person kPerson = currentFloor.getPersonByIndex(pickupList.at(k) - '0');
         bool kGoingUp;
         if (kPerson.getTargetFloor() > pickupFloorNum){
             kGoingUp = true;
@@ -116,9 +118,8 @@ bool Game::isValidPickupList(const string& pickupList,
             return false;
         }
         goingUp = kGoingUp;
-    }
-    
-    return returnBool;
+        }
+    return true;
 }
 
 //////////////////////////////////////////////////////
